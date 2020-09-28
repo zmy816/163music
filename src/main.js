@@ -4,6 +4,9 @@ import router from "./router"
 import Vant from 'vant';
 import 'vant/lib/index.css';
 import request from "./util/request";
+import vueAplayer from 'vue-aplayer'
+
+Vue.use(vueAplayer)
 Vue.use(Vant);
 
 Vue.config.productionTip = false
