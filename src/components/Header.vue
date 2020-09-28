@@ -13,7 +13,8 @@ export default {};
 
 <style scoped>
 span.active{
-    color: #fff;
+    color: #333;
+    font-weight: 700;
     font-size: 0.3rem;
 }
 </style>
