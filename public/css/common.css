@@ -1,0 +1,35 @@
+html,body,#app{
+    height: 100%;
+}
+html{
+    font-size: 13.3333vw;
+}
+#app{
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.header{
+    height: 0.88rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    color: #f08080;
+    font-size: 0.28rem;
+    background-color: #d34339;
+}
+
+/* content */
+.content{
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* footer */
+.footer{
+    height: 1.12rem;
+    border-top: 1px solid #e6e6e6;
+    display: flex;
+}
