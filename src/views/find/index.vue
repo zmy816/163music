@@ -37,7 +37,7 @@
         <p>查看更多</p>
       </div>
       <ul>
-        <li v-for="item in playList" :key="item.id">
+        <li v-for="item in playList" :key="item.id" :data-id="item.id">
           <div class="playImg">
             <img :src="item.picUrl" alt="" />
             <div>
@@ -51,6 +51,26 @@
         </li>
       </ul>
     </div>
+    <div id="find-songs">
+      <div id="songs-tit">
+        <h2>新歌速递</h2>
+        <p><span class="iconfont icon-sanjiaoxing1"></span><i>播放全部</i></p>
+      </div>
+      <van-swipe class="my-swipe" :show-indicators="false" :loop="false">
+        <van-swipe-item v-for="(items,index) in newSongs" :key="index">
+          <ul>
+            <li v-for="item in items" :key="item.id" @click="playMusic(item.id)">
+              <img :src="item.picUrl" alt="" />
+              <div>
+                <i class="sname">{{ item.name }}</i> <i class="gname">- {{ item.song.artists[0].name }}</i>
+              </div>
+              <span class="playing" v-if="musicId == item.id && playing"></span>
+              <span class="pause" v-else></span>
+            </li>
+          </ul>
+        </van-swipe-item>
+      </van-swipe>
+    </div>
   </div>
 </template>
 
@@ -59,15 +79,17 @@ export default {
   name: "Find",
   data() {
     return {
-      uid:"",
+      uid: "",
       bannerList: [],
       playList: [],
+      newSongs: [],
+      playing: false,
+      musicId: "",
     };
   },
   filters: {
     subS(e) {
       e = e.toString();
-      console.log(typeof e);
       var l = e.toString().length - 4;
       return e.substring(0, l);
     },
@@ -75,29 +97,56 @@ export default {
   created() {
     this.getBanner();
     this.getHotPlayList();
+    this.getSongs();
   },
   methods: {
+    // 获取轮播图
     getBanner() {
       this.$http.get("/banner?type=1").then((res) => {
         this.bannerList = res.banners;
       });
     },
+    // 获取每日推荐歌单
     getHotPlayList() {
-      this.$http.get("/recommend/resource?userid="+this.uid).then((res) => {
-        console.log(res);
+      this.$http.get("/recommend/resource?userid=" + this.uid).then((res) => {
         this.playList = res.recommend;
       });
     },
+    // 新歌速递
+    getSongs() {
+      this.$http.get("/personalized/newsong").then((res) => {
+        console.log(res);
+        var list = res.result;
+        for (var i = 0; i < list.length; i+=3) {
+          var songs = [];
+          if(i+3>list.length){
+            songs = list.slice(i,list.length);
+          }else{
+            songs = list.slice(i,i+3)
+          }
+          this.newSongs.push(songs);
+        }
+       console.log(this.newSongs);
+        // if(list % 3 == 0){
+
+        // }
+      });
+    },
+    // 播放音乐
+    playMusic(id){
+      this.musicId = id;
+      this.playing=!this.playing;
+    }
   },
 };
 </script>
 
 <style>
-.my-swipe .van-swipe-item {
+#find-banner .my-swipe .van-swipe-item {
   height: 2.58rem;
   border-radius: 0.1rem;
 }
-.my-swipe img {
+#find-banner .my-swipe img {
   height: 2.58rem;
   width: 6.83rem;
   border-radius: 0.1rem;
@@ -162,7 +211,7 @@ export default {
   font-weight: 700;
 }
 #playlist-tit > p {
-  height: .48rem;
+  height: 0.48rem;
   width: 1.38rem;
   border: 1px solid #ececec;
   border-radius: 0.25rem;
@@ -209,5 +258,83 @@ export default {
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+
+#find-songs {
+  margin-top: 0.6rem;
+  padding-left: 0.32rem;
+}
+#find-songs > .my-swipe {
+  margin-top: 0.3rem;
+}
+/* #find-songs .my-swipe .van-swipe-item {
+  
+   
+  } */
+#find-songs .van-swipe-item{
+  width:6.6rem;
+}
+#find-songs li {
+  display: flex;
+  margin-bottom: 0.2rem;
+  align-items: center;
+  margin-right: 0.5rem;
+}
+#find-songs li > img {
+  width: 1.14rem;
+  height: 1.14rem;
+  border-radius: 0.1rem;
+}
+#find-songs li > div {
+  margin-left: 0.2rem;
+  width: 4.2rem;
+}
+#find-songs li > div > .sname {
+  font-size: 0.3rem;
+  color: #333;
+}
+#find-songs li > div > .gname {
+  font-size: 0.2rem;
+  color: #666;
+}
+#find-songs li > span {
+  margin-left: 0.3rem;
+  width: 0.53rem;
+  height: 0.53rem;
+  /* border: 1px solid #cecece; */
+  border-radius: 50%;
+  background-size: 0.53rem 0.53rem;
+}
+#find-songs li > span.playing {
+  background-image: url(../../assets/play.png);
+}
+#find-songs li > span.pause {
+  background-image: url(../../assets/pause.png);
+}
+#songs-tit {
+  display: flex;
+  align-items: center;
+  padding-right: 0.32rem;
+  justify-content: space-between;
+}
+#songs-tit h2 {
+  font-size: 0.33rem;
+  color: #333;
+  font-weight: 900;
+}
+#songs-tit .icon-sanjiaoxing1 {
+  font-size: 0.19rem;
+}
+#songs-tit p {
+  height: 0.48rem;
+  width: 1.38rem;
+  line-height: 0.48rem;
+  text-align: center;
+  border: 1px solid #ececec;
+  border-radius: 0.25rem;
+}
+#songs-tit p > i {
+  font-size: 0.22rem;
+  color: #646464;
 }
 </style>
