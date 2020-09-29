@@ -1,9 +1,10 @@
 <template>
   <div class="login-form">
-    <div class="logo"></div>
-    <input type="tel" placeholder="请输入手机号" class="tel" />
-    <input type="password" placeholder="请输入密码" class="psd" />
-    <input type="button" value="登录" class="loginBtn" @click="tologin"/>
+    <div>
+      <input type="tel" placeholder="请输入手机号" class="tel" />
+      <input type="password" placeholder="请输入密码" class="psd" />
+      <input type="button" value="登录" class="loginBtn" @click="tologin" />
+    </div>
   </div>
 </template>
 
@@ -24,12 +25,17 @@ export default {
 .login-form {
   width: 100%;
   height: 100%;
-  background-color: #ff0000;
+  background-image: url(https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601390235858&di=48ad48c3e27a9e83ac7ac317ed27da9c&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2Ff9e384f776dc405bf85b37e8ba466a9f21cf9bfd5726-GmXGrw_fw658);
+  background-size: cover;
+  background-position: 0 0;
+  position: relative;
+}
+.login-form > div {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: relative;
+  margin: 8rem auto 0;
 }
 .login-form input {
   background-color: #fff;
@@ -49,15 +55,5 @@ export default {
 }
 #app {
   height: 100%;
-}
-.logo {
-  width: 7.5rem;
-  height: 3.5rem;
-  position: absolute;
-  background-image: url(https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601374277535&di=893ceca1b5f0a83a4b0ccdfe3e977b7a&imgtype=0&src=http%3A%2F%2Fimg.cnmo-img.com.cn%2F1731_600x1000%2F1730637.png);
-  background-position: 0 0;
-  background-size: cover;
-  top: 0;
-  left: 0;
 }
 </style>
