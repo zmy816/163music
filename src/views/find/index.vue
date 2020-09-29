@@ -115,7 +115,6 @@ export default {
     // 新歌速递
     getSongs() {
       this.$http.get("/personalized/newsong").then((res) => {
-        console.log(res);
         var list = res.result;
         for (var i = 0; i < list.length; i+=3) {
           var songs = [];
@@ -126,7 +125,6 @@ export default {
           }
           this.newSongs.push(songs);
         }
-       console.log(this.newSongs);
         // if(list % 3 == 0){
 
         // }
