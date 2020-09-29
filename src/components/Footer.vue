@@ -1,10 +1,6 @@
 <template>
   <footer class="footer">
-    <aplayer
-      repeat="repeat-one"
-      shullfe="false"
-      :music="{title:`${music.title}`,artist: `${music.artist}`,src: `${music.src}`,pic: `${music.pic}`,}"
-    />
+    <aplayer repeat="repeat-one" shullfe="false" :music="{title:`${music.title}`,artist:`${music.artist}`,src:`${music.src}`,pic:`${music.pic}`}"/>
   </footer>
 </template>
 <script>
@@ -17,12 +13,7 @@ export default {
   data() {
     return {
       ids: "523250334",
-      music: {
-        title: "",
-        artist: "",
-        src: "",
-        pic: ""
-      }
+      music: { title: "", artist: "", src: "", pic: "" }
     };
   },
   methods: {
@@ -32,12 +23,14 @@ export default {
         this.music.title = res.songs[0].name;
         this.music.pic = res.songs[0].al.picUrl;
         this.music.artist = res.songs[0].ar[0].name;
+        // console.log(res);
       });
     },
     //获取当前播放歌曲url
     getSongUrl() {
       this.$http.get("song/url?id=" + this.ids).then(res => {
         this.music.src = res.data[0].url;
+        // console.log(res);
       });
     }
   },
@@ -91,17 +84,17 @@ export default {
   margin-bottom: 0.1rem;
   font-size: 0.2rem !important;
 }
-.aplayer-bar-wrap{
+.aplayer-bar-wrap {
   width: 1.2rem;
 }
-.aplayer-controller{
+.aplayer-controller {
   margin-right: 0.12rem;
 }
-.aplayer-icon-mode{
+.aplayer-icon-mode {
   width: 0.28rem !important;
   height: 0.28rem !important;
 }
-.aplayer-time-inner{
+.aplayer-time-inner {
   font-size: 0.24rem;
 }
 </style>

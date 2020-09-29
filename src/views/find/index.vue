@@ -25,7 +25,7 @@ export default {
   methods: {
     getBanner() {
       this.$http.get("/banner?type=1").then(res=>{
-        console.log(res);
+        // console.log(res);
         this.bannerList = res.banners;
       })
     },
