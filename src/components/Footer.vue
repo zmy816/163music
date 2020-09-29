@@ -1,6 +1,6 @@
 <template>
   <footer class="footer">
-    <aplayer repeat="repeat-one" shullfe="false" :music="{title:`${music.title}`,artist:`${music.artist}`,src:`${music.src}`,pic:`${music.pic}`}"/>
+    <aplayer repeat="repeat-one" shullfe="false" v-if="music.title&&music.artist&&music.src&&music.pic" :music="{title:`${music.title}`,artist:`${music.artist}`,src:`${music.src}`,pic:`${music.pic}`}"/>
   </footer>
 </template>
 <script>

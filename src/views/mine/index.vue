@@ -119,7 +119,6 @@ export default {
     getrecommend() {
       this.$http.get("personalized?limit=5").then(res => {
         if (res.code == 200) {
-          // console.log(res);
           this.recommendlist = res.result;
         }
       });
@@ -128,7 +127,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .content {
   background-color: #f8f8f8;
 }
