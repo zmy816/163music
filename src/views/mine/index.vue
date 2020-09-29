@@ -97,7 +97,7 @@ export default {
   data() {
     return {
       showflag: true,
-      recommendlist: {}
+      recommendlist: []
     };
   },
   created() {
@@ -121,7 +121,6 @@ export default {
         if (res.code == 200) {
           // console.log(res);
           this.recommendlist = res.result;
-          this.recommendlist.imgUrl = require(res.result.imgUrl);
         }
       });
     }
