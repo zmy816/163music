@@ -79,7 +79,7 @@ export default {
   name: "Find",
   data() {
     return {
-      uid: "",
+      // uid: "",
       bannerList: [],
       playList: [],
       newSongs: [],
@@ -99,6 +99,11 @@ export default {
     this.getHotPlayList();
     this.getSongs();
   },
+  computed: {
+    uid(){
+      return this.$store.getters.uid;
+    }
+  },
   methods: {
     // 获取轮播图
     getBanner() {
@@ -108,7 +113,7 @@ export default {
     },
     // 获取每日推荐歌单
     getHotPlayList() {
-      this.$http.get("/recommend/resource?userid=" + this.uid).then((res) => {
+      this.$http.get("/recommend/resource?uid=" + this.uid).then((res) => {
         this.playList = res.recommend;
       });
     },
@@ -134,6 +139,10 @@ export default {
     playMusic(id){
       this.musicId = id;
       this.playing=!this.playing;
+      if(this.playing){
+
+        this.$store.dispatch("setSongid", id);
+      }
     }
   },
 };

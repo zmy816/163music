@@ -1,5 +1,7 @@
 import axios from "axios";
+import {Toast} from "vant";
 import { getToken } from "./auth";
+import store from "../store";
 
 const service = axios.create({
     baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -12,7 +14,7 @@ service.interceptors.request.use(
     config => {
         // do something before request is sent
 
-        if (getToken) { //判断是否有cookie，有的话加在请求头中
+        if (store.getters.token) { //判断是否有cookie，有的话加在请求头中
             // let each request carry token
             // ['X-Token'] is a custom headers key
             // please modify it according to the actual situation
@@ -32,22 +34,18 @@ service.interceptors.response.use(
     response => {
     const res = response.data;
     if (res.code !== 200) {
-        // Message({
-        //   message: res.message || 'Error',
-        //   type: 'error',
-        //   duration: 5 * 1000
-        // })
+        Toast({
+            message: res.message || "Error"
+        });
     } else {
         return res;
     }
 },
 error => {
     console.log('err' + error) // for debug
-    // Message({
-    //   message: error.message,
-    //   type: 'error',
-    //   duration: 5 * 1000
-    // })
+    Toast({
+        message: error.message || "Error"
+    });
     return Promise.reject(error)
   }
 )

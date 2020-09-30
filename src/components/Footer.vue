@@ -37,6 +37,12 @@ export default {
   created() {
     this.getPlayingSong();
     this.getSongUrl();
+  },
+  computed: {
+    // 未完成
+    id(){
+      return this.$store.getters.songid;
+    }
   }
 };
 </script>

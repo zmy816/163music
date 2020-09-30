@@ -1,13 +1,23 @@
 <template>
   <div class="content">
-    <div class="personalInformation">
+    <div class="personalInformation" v-if="showLogin">
       <img
         class="head_portrait"
         src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2389998747,3300817372&fm=26&gp=0.jpg"
         alt
       />
-      <p class="title">立即登录</p>
+      <p class="title" @click="login">立即登录</p>
       <span class="iconfont icon-right"></span>
+    </div>
+    <div id="infoBox" v-else>
+      <div id="info" v-if="userInfo">
+        <img :src="userInfo.profile.avatarUrl" alt="" />
+        <div>
+          <h3 id="nickName">{{ userInfo.profile.nickname }}</h3>
+          <i id="level">Lv.{{ userInfo.level }}</i>
+        </div>
+      </div>
+      <button @click="loginOut">退出登录</button>
     </div>
     <div class="applicationList">
       <ul>
@@ -43,7 +53,7 @@
       </div>
       <p>
         <span class="favorite_title">我喜欢的音乐</span>
-        <span class="number">0首</span>
+        <span class="number" v-if="myMusic">{{ myMusic.trackCount}} 首</span>
       </p>
     </div>
     <div class="songlist">
@@ -62,8 +72,20 @@
             <span class="iconfont icon-sangedian"></span>
           </div>
           <div class="collect_content">
-            <ul>
+            <ul class="noList" v-if="myPlayList.length==0">
               <li>暂无收藏的歌单</li>
+            </ul>
+            <ul v-else>
+              <li v-for="(item) in myPlayList" :key="item.id">
+                <img :src="item.coverImgUrl" alt />
+                <div>
+                  <p>{{ item.name }}</p>
+                  <span>
+                    {{ item.trackCount }}
+                    <em>首</em>
+                  </span>
+                </div>
+              </li>
             </ul>
           </div>
         </div>
@@ -74,12 +96,12 @@
           </div>
           <div class="recommend_content">
             <ul>
-              <li v-for="(item,index) in recommendlist" :key="index">
+              <li v-for="(item, index) in recommendlist" :key="index">
                 <img :src="item.picUrl" alt />
                 <div>
-                  <p>{{item.name}}</p>
+                  <p>{{ item.name }}</p>
                   <span>
-                    {{item.trackCount}}
+                    {{ item.trackCount }}
                     <em>首</em>
                   </span>
                 </div>
@@ -93,15 +115,32 @@
 </template>
 
 <script>
+import { removeToken } from "../../util/auth";
 export default {
   data() {
     return {
       showflag: true,
-      recommendlist: []
+      recommendlist: [],
+      userInfo: null,
+      // uid: "",
+      showLogin: true,
+      myPlayList: [],
+      myMusic: null,
     };
   },
   created() {
+    // this.uid = this.$store.getters.uid; //设置用户id
+    if(this.uid){
+      this.showLogin = false;
+    }
+    this.getUserInfo();
     this.getrecommend();
+    this.getMyPlayList();
+  },
+  computed: {
+    uid(){
+      return this.$store.getters.uid;
+    }
   },
   methods: {
     checked(type) {
@@ -115,15 +154,53 @@ export default {
         this.$refs.collect.className = "";
       }
     },
+    // 获取用户信息
+    getUserInfo(){
+      if(this.uid){
+        this.$http.get("/user/detail?uid="+this.uid).then(res=>{
+          if(res){
+            this.userInfo = res;
+          }
+        })
+      }
+    },
+    //获取收藏的歌单
+    getMyPlayList(){
+      if(this.uid){
+        this.$http.get("/user/playlist?uid="+this.uid).then(res=>{
+          // console.log(res);
+          this.myMusic = res.playlist[0];
+          
+          this.myPlayList = res.playlist.slice(1);
+          console.log("音乐",this.myMusic);
+          console.log("歌单", this.myPlayList);
+        })
+      }
+    },
     //调用推荐歌单
     getrecommend() {
-      this.$http.get("personalized?limit=5").then(res => {
+      this.$http.get("/personalized?limit=5&userid=" + this.uid).then((res) => {
         if (res.code == 200) {
           this.recommendlist = res.result;
         }
       });
+    },
+    // 跳转登录页面
+    login() {
+      this.$router.push({
+        path: "/login",
+      });
+    },
+    // 退出登录
+    loginOut() {
+      this.showLogin = true;
+      removeToken(); //移除cookie中的Token
+      this.$store.dispatch("setToken", ""); //清空vuex中存的token
+      this.$store.dispatch("setUid", "");   //清空vuex中存的uid
+      this.myPlayList = [];
+      this.myMusic = null;
     }
-  }
+  },
 };
 </script>
 
@@ -264,7 +341,8 @@ export default {
   margin: 0 auto;
   border-radius: 0.2rem;
 }
-.recommend_header,.collect_header {
+.recommend_header,
+.collect_header {
   width: 6.2rem;
   height: 1rem;
   display: flex;
@@ -272,37 +350,39 @@ export default {
   margin: 0 auto;
   align-items: center;
 }
-.recommend_header span,.collect_header span {
+.recommend_header span,
+.collect_header span {
   color: #aeaeae;
   font-size: 0.28rem;
 }
-.recommend_header h3,.collect_header h3 {
+.recommend_header h3,
+.collect_header h3 {
   font-size: 0.32rem;
   color: #262626;
   font-weight: 600;
 }
-.recommend_content ul {
+.recommend_content ul, .collect_content ul{
   width: 6.2rem;
   margin: 0.2rem auto;
   padding-bottom: 0.2rem;
 }
-.recommend_content ul li {
+.recommend_content ul li, .collect_content ul li {
   margin: 0.1rem auto;
   display: flex;
   align-items: center;
 }
-.recommend_content img {
+.recommend_content img, .collect_content img {
   width: 1.05rem;
   height: 1.05rem;
   border-radius: 0.1rem;
   margin-right: 0.2rem;
 }
-.recommend_content li div {
+.recommend_content li div, .collect_content li div {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
 }
-.recommend_content li div p {
+.recommend_content li div p, .collect_content li div p {
   font-size: 0.28rem;
   color: #272727;
   width: 4.9rem;
@@ -310,18 +390,65 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.recommend_content li div span {
+.recommend_content li div span,.collect_content li div span {
   font-size: 0.2rem;
   color: #7a7a7a;
 }
-.collect_content ul li{
+.collect_content ul.noList li {
   height: 1.05rem;
   margin: 0.1rem auto;
   color: #989898;
   line-height: 1.05rem;
   text-align: center;
 }
+#infoBox {
+  margin-top: 0.5rem;
+  margin-bottom: .4rem;
+  padding: 0 .5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#info{
+  display: flex;
 
-
-
+}
+#info>img{
+  width: 1.04rem;
+  height: 1.04rem;
+  border-radius: 50%;
+}
+#info>div{
+  margin-left: .32rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+#nickName{
+  font-size: .27rem;
+  color: #323232;
+  font-weight: 700;
+}
+#level{
+  margin-top: .1rem;
+  height: .34rem;
+  width: .68rem;
+  text-align: center;
+  line-height: .34rem;
+  border-radius: .17rem;
+  color: #666;
+  font-size: .16rem;
+  font-weight: 700;
+  font-family: STXingkai;
+  background: #fff;
+}
+#infoBox>button{
+  background-color: #ee362d;
+  height: .5rem;
+  width: 1.5rem;
+  border-radius: .25rem;
+  color: #fff;
+  line-height: .5rem;
+  font-size: .17rem;
+}
 </style>
