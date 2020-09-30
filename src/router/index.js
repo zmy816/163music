@@ -36,7 +36,7 @@ var router = new VueRouter({
                 import ("../views/search"),
             meta: {
                 showHeader: false,
-                showFooter: false
+                showFooter: true
             }
         },
         {
@@ -47,6 +47,16 @@ var router = new VueRouter({
             meta: {
                 showHeader: false,
                 showFooter: false
+            }
+        },
+        {
+            path: "/songList",
+            name: "SongList",
+            component: () =>
+                import ("../views/songList"),
+            meta: {
+                showHeader: false,
+                showFooter: true
             }
         },
     ],
