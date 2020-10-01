@@ -54,6 +54,6 @@ export default {
 }
 .snum{
     font-size: 0.3rem;
-    color: #a3a3a3;
+    color: #a3a3a3 !important;
 }
 </style>
