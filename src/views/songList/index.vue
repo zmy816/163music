@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="top">
-      <van-nav-bar title="歌曲列表" left-arrow @click-left="onClickLeft" />
+      <van-nav-bar :title="title" left-arrow @click-left="onClickLeft" />
     </div>
     <div class="main">
       <div class="main_top">
@@ -9,20 +9,16 @@
           <span class="iconfont icon-bofang1-copy"></span> 播放全部
           <span class="snum">(共{{songsNum}}首)</span>
         </div>
-        <div class="addCollections">
-          <span class="add">+</span>
-          收藏({{collectionsNum}})
-        </div>
       </div>
       <ul>
-        <li class="main-container">
-          <p class="order">1</p>
+        <li class="main-container" v-for="(item,index) in songs" :key="item.id">
+          <p class="order">{{index+1}}</p>
           <div class="songwrap">
-            <div class="songName">晚安</div>
+            <div class="songName">{{item.al.name}}</div>
             <div class="singer">
               <span class="exclusive">独家</span>
               <span class="sq">SQ</span>
-              <div class="singername">颜人中</div>
+              <div class="singername">{{item.ar[0].name}}</div>
             </div>
           </div>
           <span class="iconfont icon-sangedian"></span>
@@ -38,10 +34,10 @@ export default {
   data() {
     return {
       title: "标题",
-      songsNum: "45",
-      collectionsNum: "509",
-      songlist: {},
-      songlistID: "24381616"
+      songsNum: "",
+      trackIds: [],
+      songlistID: "",
+      songs:[]
     };
   },
   computed: {},
@@ -54,15 +50,28 @@ export default {
     //请求歌单列表
     getSongList(id) {
       this.$http.get("/playlist/detail?id=" + id).then(res => {
-        console.log(res.playlist.tracks);
-        console.log(res)
-        this.songlist = this.res;
+        this.songsNum = res.playlist.trackIds.length;
+        this.trackIds = res.playlist.trackIds;
+        // console.log(res);
+        var str = "";
+        for (let i = 0; i < this.trackIds.length; i++) {
+          if (i == 0) {
+            str += this.trackIds[0].id;
+          } else {
+            str += "," + this.trackIds[i].id;
+          }
+        }
+        this.$http.get("/song/detail?ids="+str).then(res=>{
+          this.songs=res.songs
+          console.log(this.songs)
+        })
       });
     }
   },
   created() {
+    this.title = this.$route.query.title;
+    this.songlistID = this.$route.query.id;
     this.getSongList(this.songlistID);
-    console.log(this.songlist)
   },
   mounted() {}
 };
@@ -120,9 +129,10 @@ export default {
   color: #b3b3b3;
 }
 .main-container p {
+  width: 1.16rem;
   font-size: 0.36rem;
   color: #939393;
-  margin: 0 0.4rem;
+  text-align: center;
 }
 .singer {
   display: flex;

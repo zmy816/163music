@@ -13,7 +13,7 @@ module.exports = {
         port: 8989, // 开发服务器运行端口号
         proxy: {
             [process.env.VUE_APP_BASE_API]: {
-                target: 'http://192.168.1.5:3000', // 代理接口地址
+                target: 'http://192.168.15.52:3000', // 代理接口地址
                 secure: false, // 如果是https接口，需要配置这个参数
                 changeOrigin: true, // 是否跨域
                 pathRewrite: {

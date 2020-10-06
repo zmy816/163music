@@ -11,7 +11,7 @@
     </div>
     <div id="infoBox" v-else>
       <div id="info" v-if="userInfo">
-        <img :src="userInfo.profile.avatarUrl" alt="" />
+        <img :src="userInfo.profile.avatarUrl" alt />
         <div>
           <h3 id="nickName">{{ userInfo.profile.nickname }}</h3>
           <i id="level">Lv.{{ userInfo.level }}</i>
@@ -47,7 +47,7 @@
         </li>
       </ul>
     </div>
-    <div class="favorite">
+    <div class="favorite" @click="toSonglist(myMusic.id,myMusic.name)">
       <div class="icon">
         <span class="iconfont icon-xin1-copy"></span>
       </div>
@@ -76,7 +76,11 @@
               <li>暂无收藏的歌单</li>
             </ul>
             <ul v-else>
-              <li v-for="(item) in myPlayList" :key="item.id">
+              <li
+                v-for="(item) in myPlayList"
+                :key="item.id"
+                @click="toSonglist(item.id,item.name)"
+              >
                 <img :src="item.coverImgUrl" alt />
                 <div>
                   <p>{{ item.name }}</p>
@@ -96,7 +100,11 @@
           </div>
           <div class="recommend_content">
             <ul>
-              <li v-for="(item, index) in recommendlist" :key="index">
+              <li
+                v-for="(item, index) in recommendlist"
+                :key="index"
+                @click="toSonglist(item.id,item.name)"
+              >
                 <img :src="item.picUrl" alt />
                 <div>
                   <p>{{ item.name }}</p>
@@ -125,12 +133,12 @@ export default {
       // uid: "",
       showLogin: true,
       myPlayList: [],
-      myMusic: null,
+      myMusic: null
     };
   },
   created() {
     // this.uid = this.$store.getters.uid; //设置用户id
-    if(this.uid){
+    if (this.uid) {
       this.showLogin = false;
     }
     this.getUserInfo();
@@ -138,7 +146,7 @@ export default {
     this.getMyPlayList();
   },
   computed: {
-    uid(){
+    uid() {
       return this.$store.getters.uid;
     }
   },
@@ -155,31 +163,30 @@ export default {
       }
     },
     // 获取用户信息
-    getUserInfo(){
-      if(this.uid){
-        this.$http.get("/user/detail?uid="+this.uid).then(res=>{
-          if(res){
+    getUserInfo() {
+      if (this.uid) {
+        this.$http.get("/user/detail?uid=" + this.uid).then(res => {
+          if (res) {
             this.userInfo = res;
           }
-        })
+        });
       }
     },
     //获取收藏的歌单
-    getMyPlayList(){
-      if(this.uid){
-        this.$http.get("/user/playlist?uid="+this.uid).then(res=>{
-          // console.log(res);
+    getMyPlayList() {
+      if (this.uid) {
+        this.$http.get("/user/playlist?uid=" + this.uid).then(res => {
           this.myMusic = res.playlist[0];
-          
+
           this.myPlayList = res.playlist.slice(1);
-          console.log("音乐",this.myMusic);
-          console.log("歌单", this.myPlayList);
-        })
+          // console.log("音乐",this.myMusic);
+          // console.log("歌单", this.myPlayList);
+        });
       }
     },
     //调用推荐歌单
     getrecommend() {
-      this.$http.get("/personalized?limit=5&userid=" + this.uid).then((res) => {
+      this.$http.get("/personalized?limit=5&userid=" + this.uid).then(res => {
         if (res.code == 200) {
           this.recommendlist = res.result;
         }
@@ -188,7 +195,7 @@ export default {
     // 跳转登录页面
     login() {
       this.$router.push({
-        path: "/login",
+        path: "/login"
       });
     },
     // 退出登录
@@ -196,11 +203,15 @@ export default {
       this.showLogin = true;
       removeToken(); //移除cookie中的Token
       this.$store.dispatch("setToken", ""); //清空vuex中存的token
-      this.$store.dispatch("setUid", "");   //清空vuex中存的uid
+      this.$store.dispatch("setUid", ""); //清空vuex中存的uid
       this.myPlayList = [];
       this.myMusic = null;
+    },
+    //跳转到歌曲列表页
+    toSonglist(key, name) {
+      this.$router.push("/songlist?id=" + key + "&title=" + name);
     }
-  },
+  }
 };
 </script>
 
@@ -361,28 +372,33 @@ export default {
   color: #262626;
   font-weight: 600;
 }
-.recommend_content ul, .collect_content ul{
+.recommend_content ul,
+.collect_content ul {
   width: 6.2rem;
   margin: 0.2rem auto;
   padding-bottom: 0.2rem;
 }
-.recommend_content ul li, .collect_content ul li {
+.recommend_content ul li,
+.collect_content ul li {
   margin: 0.1rem auto;
   display: flex;
   align-items: center;
 }
-.recommend_content img, .collect_content img {
+.recommend_content img,
+.collect_content img {
   width: 1.05rem;
   height: 1.05rem;
   border-radius: 0.1rem;
   margin-right: 0.2rem;
 }
-.recommend_content li div, .collect_content li div {
+.recommend_content li div,
+.collect_content li div {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
 }
-.recommend_content li div p, .collect_content li div p {
+.recommend_content li div p,
+.collect_content li div p {
   font-size: 0.28rem;
   color: #272727;
   width: 4.9rem;
@@ -390,7 +406,8 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.recommend_content li div span,.collect_content li div span {
+.recommend_content li div span,
+.collect_content li div span {
   font-size: 0.2rem;
   color: #7a7a7a;
 }
@@ -403,52 +420,51 @@ export default {
 }
 #infoBox {
   margin-top: 0.5rem;
-  margin-bottom: .4rem;
-  padding: 0 .5rem;
+  margin-bottom: 0.4rem;
+  padding: 0 0.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-#info{
+#info {
   display: flex;
-
 }
-#info>img{
+#info > img {
   width: 1.04rem;
   height: 1.04rem;
   border-radius: 50%;
 }
-#info>div{
-  margin-left: .32rem;
+#info > div {
+  margin-left: 0.32rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
-#nickName{
-  font-size: .27rem;
+#nickName {
+  font-size: 0.27rem;
   color: #323232;
   font-weight: 700;
 }
-#level{
-  margin-top: .1rem;
-  height: .34rem;
-  width: .68rem;
+#level {
+  margin-top: 0.1rem;
+  height: 0.34rem;
+  width: 0.68rem;
   text-align: center;
-  line-height: .34rem;
-  border-radius: .17rem;
+  line-height: 0.34rem;
+  border-radius: 0.17rem;
   color: #666;
-  font-size: .16rem;
+  font-size: 0.16rem;
   font-weight: 700;
   font-family: STXingkai;
   background: #fff;
 }
-#infoBox>button{
+#infoBox > button {
   background-color: #ee362d;
-  height: .5rem;
+  height: 0.5rem;
   width: 1.5rem;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   color: #fff;
-  line-height: .5rem;
-  font-size: .17rem;
+  line-height: 0.5rem;
+  font-size: 0.17rem;
 }
 </style>

@@ -3,30 +3,40 @@
     <div id="find-banner">
       <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
         <van-swipe-item v-for="item in bannerList" :key="item.bannerId">
-          <img :src="item.pic" alt="" />
+          <img :src="item.pic" alt />
         </van-swipe-item>
       </van-swipe>
     </div>
     <div id="find-app">
       <ul>
         <li>
-          <p><span class="iconfont icon-data"></span></p>
+          <p>
+            <span class="iconfont icon-data"></span>
+          </p>
           <i>每日推荐</i>
         </li>
         <li>
-          <p><span class="iconfont icon-FM"></span></p>
+          <p>
+            <span class="iconfont icon-FM"></span>
+          </p>
           <i>私人FM</i>
         </li>
         <li>
-          <p><span class="iconfont icon-gedan1"></span></p>
+          <p>
+            <span class="iconfont icon-gedan1"></span>
+          </p>
           <i>歌单</i>
         </li>
         <li>
-          <p><span class="iconfont icon-paihangbang"></span></p>
+          <p>
+            <span class="iconfont icon-paihangbang"></span>
+          </p>
           <i>排行榜</i>
         </li>
         <li>
-          <p><span class="iconfont icon-diantai"></span></p>
+          <p>
+            <span class="iconfont icon-diantai"></span>
+          </p>
           <i>电台</i>
         </li>
       </ul>
@@ -37,9 +47,14 @@
         <p>查看更多</p>
       </div>
       <ul>
-        <li v-for="item in playList" :key="item.id" :data-id="item.id">
+        <li
+          v-for="item in playList"
+          :key="item.id"
+          :data-id="item.id"
+          @click="toSonglist(item.id,item.name)"
+        >
           <div class="playImg">
-            <img :src="item.picUrl" alt="" />
+            <img :src="item.picUrl" alt />
             <div>
               <p>
                 <span class="iconfont icon-sanjiaoxing1"></span>
@@ -54,15 +69,19 @@
     <div id="find-songs">
       <div id="songs-tit">
         <h2>新歌速递</h2>
-        <p><span class="iconfont icon-sanjiaoxing1"></span><i>播放全部</i></p>
+        <p>
+          <span class="iconfont icon-sanjiaoxing1"></span>
+          <i>播放全部</i>
+        </p>
       </div>
       <van-swipe class="my-swipe" :show-indicators="false" :loop="false">
         <van-swipe-item v-for="(items,index) in newSongs" :key="index">
           <ul>
             <li v-for="item in items" :key="item.id" @click="playMusic(item.id)">
-              <img :src="item.picUrl" alt="" />
+              <img :src="item.picUrl" alt />
               <div>
-                <i class="sname">{{ item.name }}</i> <i class="gname">- {{ item.song.artists[0].name }}</i>
+                <i class="sname">{{ item.name }}</i>
+                <i class="gname">- {{ item.song.artists[0].name }}</i>
               </div>
               <span class="playing" v-if="musicId == item.id && playing"></span>
               <span class="pause" v-else></span>
@@ -84,7 +103,7 @@ export default {
       playList: [],
       newSongs: [],
       playing: false,
-      musicId: "",
+      musicId: ""
     };
   },
   filters: {
@@ -92,7 +111,7 @@ export default {
       e = e.toString();
       var l = e.toString().length - 4;
       return e.substring(0, l);
-    },
+    }
   },
   created() {
     this.getBanner();
@@ -100,33 +119,34 @@ export default {
     this.getSongs();
   },
   computed: {
-    uid(){
+    uid() {
       return this.$store.getters.uid;
     }
   },
   methods: {
     // 获取轮播图
     getBanner() {
-      this.$http.get("/banner?type=1").then((res) => {
+      this.$http.get("/banner?type=1").then(res => {
         this.bannerList = res.banners;
       });
     },
     // 获取每日推荐歌单
     getHotPlayList() {
-      this.$http.get("/recommend/resource?uid=" + this.uid).then((res) => {
+      this.$http.get("/recommend/resource?uid=" + this.uid).then(res => {
         this.playList = res.recommend;
+        console.log(this.playList);
       });
     },
     // 新歌速递
     getSongs() {
-      this.$http.get("/personalized/newsong").then((res) => {
+      this.$http.get("/personalized/newsong").then(res => {
         var list = res.result;
-        for (var i = 0; i < list.length; i+=3) {
+        for (var i = 0; i < list.length; i += 3) {
           var songs = [];
-          if(i+3>list.length){
-            songs = list.slice(i,list.length);
-          }else{
-            songs = list.slice(i,i+3)
+          if (i + 3 > list.length) {
+            songs = list.slice(i, list.length);
+          } else {
+            songs = list.slice(i, i + 3);
           }
           this.newSongs.push(songs);
         }
@@ -136,15 +156,18 @@ export default {
       });
     },
     // 播放音乐
-    playMusic(id){
+    playMusic(id) {
       this.musicId = id;
-      this.playing=!this.playing;
-      if(this.playing){
-
+      this.playing = !this.playing;
+      if (this.playing) {
         this.$store.dispatch("setSongid", id);
       }
+    },
+    //跳转到歌曲列表页
+    toSonglist(key, name) {
+      this.$router.push("/songlist?id=" + key + "&title=" + name);
     }
-  },
+  }
 };
 </script>
 
@@ -278,8 +301,8 @@ export default {
   
    
   } */
-#find-songs .van-swipe-item{
-  width:6.6rem;
+#find-songs .van-swipe-item {
+  width: 6.6rem;
 }
 #find-songs li {
   display: flex;
