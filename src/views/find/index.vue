@@ -83,7 +83,7 @@
                 <i class="sname">{{ item.name }}</i>
                 <i class="gname">- {{ item.song.artists[0].name }}</i>
               </div>
-              <span class="playing" v-if="musicId == item.id && playing"></span>
+              <span class="playing" v-if="musicId == item.id"></span>
               <span class="pause" v-else></span>
             </li>
           </ul>
@@ -102,8 +102,7 @@ export default {
       bannerList: [],
       playList: [],
       newSongs: [],
-      playing: false,
-      musicId: ""
+      musicId: "",
     };
   },
   filters: {
@@ -150,22 +149,17 @@ export default {
           }
           this.newSongs.push(songs);
         }
-        // if(list % 3 == 0){
-
-        // }
       });
     },
     // 播放音乐
     playMusic(id) {
       this.musicId = id;
-      this.playing = !this.playing;
-      if (this.playing) {
-        this.$store.dispatch("setSongid", id);
-      }
+      this.$store.dispatch("setSongid", id);
     },
     //跳转到歌曲列表页
     toSonglist(key, name) {
       this.$router.push("/songlist?id=" + key + "&title=" + name);
+
     }
   }
 };
