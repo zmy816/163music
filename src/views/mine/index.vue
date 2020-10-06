@@ -172,8 +172,6 @@ export default {
           this.myMusic = res.playlist[0];
           
           this.myPlayList = res.playlist.slice(1);
-          console.log("音乐",this.myMusic);
-          console.log("歌单", this.myPlayList);
         })
       }
     },

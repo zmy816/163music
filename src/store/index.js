@@ -6,7 +6,7 @@ const store = new Vuex.Store({
   state:{
     token: "",
     uid: "",
-    songid: ""
+    songid: "523250334"
   },
   getters: {
     token: state=>{
