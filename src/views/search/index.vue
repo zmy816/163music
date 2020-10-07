@@ -11,7 +11,7 @@
       <div class="searchResult" v-show="showSearchList">
         <ul v-if="hasData" class="searchList">
           <li class="header">搜索&nbsp;&nbsp;“{{value}}”&nbsp;&nbsp;</li>
-          <li v-for="(item,index) in searchResult" :key="index">
+          <li v-for="(item,index) in searchResult" :key="index" @click="play(item.id)">
             <span class="iconfont icon-sousuo"></span>
             <span class="keys">{{item.name}}—{{item.artists[0].name}}</span>
           </li>
@@ -78,6 +78,10 @@ export default {
         this.hotSearchList = res.result.hots;
         // console.log(this.hotSearchList);
       });
+    },
+    // 播放音乐
+    play(id){
+      this.$store.dispatch("setSongid", id);
     }
   },
   mounted() {

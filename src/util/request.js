@@ -6,7 +6,7 @@ import store from "../store";
 const service = axios.create({
     baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
     // withCredentials: true, // send cookies when cross-domain requests
-    timeout: 5000 // request timeout
+    timeout: 10000 // request timeout
 })
 
 // 请求拦截
@@ -44,7 +44,7 @@ service.interceptors.response.use(
 error => {
     console.log('err' + error) // for debug
     Toast({
-        message: error.message || "Error"
+        message: "加载失败，请求超时"
     });
     return Promise.reject(error)
   }

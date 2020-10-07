@@ -9,7 +9,7 @@
     </div>
     <div id="find-app">
       <ul>
-        <li>
+        <li @click="goSongList">
           <p>
             <span class="iconfont icon-data"></span>
           </p>
@@ -21,7 +21,7 @@
           </p>
           <i>私人FM</i>
         </li>
-        <li>
+        <li @click="goPlayList">
           <p>
             <span class="iconfont icon-gedan1"></span>
           </p>
@@ -133,7 +133,6 @@ export default {
     getHotPlayList() {
       this.$http.get("/recommend/resource?uid=" + this.uid).then(res => {
         this.playList = res.recommend;
-        console.log(this.playList);
       });
     },
     // 新歌速递
@@ -159,7 +158,14 @@ export default {
     //跳转到歌曲列表页
     toSonglist(key, name) {
       this.$router.push("/songlist?id=" + key + "&title=" + name);
-
+    },
+    // 跳转每日推荐歌曲列表页
+    goSongList(){
+      this.$router.push("/songlist?title=每日歌曲推荐");
+    },
+    // 跳转到歌单广场
+    goPlayList(){
+      this.$router.push("/playlist");
     }
   }
 };
