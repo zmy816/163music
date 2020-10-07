@@ -11,7 +11,12 @@
         </div>
       </div>
       <ul>
-        <li class="main-container" v-for="(item,index) in songs" :key="item.id">
+        <li
+          class="main-container"
+          v-for="(item,index) in songs"
+          :key="item.id"
+          @click="playMusic(item.id)"
+        >
           <p class="order">{{index+1}}</p>
           <div class="songwrap">
             <div class="songName">{{item.al.name}}</div>
@@ -37,7 +42,8 @@ export default {
       songsNum: "",
       trackIds: [],
       songlistID: "",
-      songs:[]
+      songs: [],
+      musicID: ""
     };
   },
   computed: {},
@@ -61,11 +67,15 @@ export default {
             str += "," + this.trackIds[i].id;
           }
         }
-        this.$http.get("/song/detail?ids="+str).then(res=>{
-          this.songs=res.songs
-          console.log(this.songs)
-        })
+        this.$http.get("/song/detail?ids=" + str).then(res => {
+          this.songs = res.songs;
+          console.log(this.songs);
+        });
       });
+    },
+    playMusic(id) {
+      this.musicId = id;
+      this.$store.dispatch("setSongid", id);
     }
   },
   created() {
