@@ -2,7 +2,7 @@
   <div class="content">
     <div id="topWrap">
       <div class="titleBox">
-        <p></p>
+        <p @click="$router.push('/find')"></p>
         <h2>歌单广场</h2>
       </div>
       <div>
@@ -16,7 +16,12 @@
         </ul>
       </div>
     </div>
-    <router-view></router-view>
+    <transition mode="out-in" name="my">
+      <keep-alive>
+        <router-view></router-view>
+      </keep-alive>
+    </transition>
+    
   </div>
 </template>
 
@@ -27,6 +32,11 @@ export default {
 </script>
 
 <style>
+.content{
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
 .titleBox{
   height: 1rem;
   display: flex;
@@ -75,21 +85,49 @@ export default {
 .category>li.active i{
   display: block;
 }
-.listWrap>ul{
-  padding-top: .32rem;
+.listWrap{
+  flex: 1;
+  overflow-y: auto;
+}
+.listWrap>.van-list{
+  padding: .32rem .12rem 0 .32rem;
   display: flex;
   flex-wrap: wrap;
 }
-.listWrap>ul>li{
-  width: 33.3%;
-  margin-bottom: .4rem;
+.listWrap>.van-list>.van-cell{
+  width: 2.15rem;
+  margin-bottom: .25rem;
+  margin-right: .2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+.listWrap .van-cell .van-cell__value>p{
+  width: 2.15rem;
+  margin-top: .15rem;
+  color: #333;
+  font-size: .23rem;
+  line-height: .35rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.van-cell::after{
+  border: none;
+}
+.van-list__finished-text{
+  margin: 0 auto;
+}
+.van-list__loading{
+  margin: 0 auto;
+}
 .imgBox>img{
   width: 2.15rem;
   height: 2.15rem;
+  border-radius: .08rem;
 }
 .imgBox{
   position: relative;
@@ -98,5 +136,21 @@ export default {
   position: absolute;
   right: 0.1rem;
   top: 0.1rem;
+  font-size: .18rem;
+}
+.imgBox p>.iconfont{
+  color: #fff;
+  font-size: .16rem;
+}
+.imgBox p>i{
+  color: #fff;
+  margin-left: .05rem;
+}
+.my-enter{
+    opacity: 0;
+    transform: translateX(100%); 
+}
+.my-enter-active{
+      transition: all .3s ease;
 }
 </style>

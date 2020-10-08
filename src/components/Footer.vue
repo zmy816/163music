@@ -19,13 +19,13 @@ export default {
     // 初始化
     init(){
       // 获取歌曲信息
-      this.$http.get("song/detail?ids=" + this.id).then(res => {
+      this.$http.get("/song/detail?ids=" + this.id).then(res => {
         this.music.title = res.songs[0].name;
         this.music.pic = res.songs[0].al.picUrl;
         this.music.artist = res.songs[0].ar[0].name;
       });
       // 获取歌曲url
-      this.$http.get("song/url?id=" + this.id).then(res => {
+      this.$http.get("/song/url?id=" + this.id).then(res => {
         this.music.src = res.data[0].url;
         if(!res.data[0].url){
           Toast("此歌曲需要付费！");

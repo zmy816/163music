@@ -2,7 +2,7 @@
   <div class="content">
     <div id="find-banner">
       <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
-        <van-swipe-item v-for="item in bannerList" :key="item.bannerId">
+        <van-swipe-item v-for="item in bannerList" :key="item.bannerId" @click="playMusic(item.targetId)">
           <img :src="item.pic" alt />
         </van-swipe-item>
       </van-swipe>
@@ -44,7 +44,7 @@
     <div id="find-playlist">
       <div id="playlist-tit">
         <h2>宝藏歌单，值得聆听</h2>
-        <p>查看更多</p>
+        <p @click="$router.push('/playlist')">查看更多</p>
       </div>
       <ul>
         <li
@@ -152,8 +152,11 @@ export default {
     },
     // 播放音乐
     playMusic(id) {
-      this.musicId = id;
-      this.$store.dispatch("setSongid", id);
+      if(id != 0){
+        this.musicId = id;
+        this.$store.dispatch("setSongid", id);
+      }
+      
     },
     //跳转到歌曲列表页
     toSonglist(key, name) {
