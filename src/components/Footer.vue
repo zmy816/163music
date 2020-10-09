@@ -1,11 +1,11 @@
 <template>
   <footer class="footer">
-    <aplayer repeat="repeat-one"  shullfe="false" v-if="music.title&&music.artist&&music.src&&music.pic" :music="{title:`${music.title}`,artist:`${music.artist}`,src:`${music.src}`,pic:`${music.pic}`}" ref="player" @canplay="play"/>
+    <aplayer repeat="repeat-one"  shullfe="false" v-if="music.title&&music.artist&&music.pic&&music.src" :music="{title:`${music.title}`,artist:`${music.artist}`,src:`${music.src}`,pic:`${music.pic}`}" ref="player" @canplay="play"/>
   </footer>
 </template>
 <script>
 import aplayer from "vue-aplayer";
-
+import { Toast } from "vant";
 export default {
   components: {
     aplayer
@@ -19,20 +19,26 @@ export default {
     // 初始化
     init(){
       // 获取歌曲信息
-      this.$http.get("song/detail?ids=" + this.id).then(res => {
+      this.$http.get("/song/detail?ids=" + this.id).then(res => {
         this.music.title = res.songs[0].name;
         this.music.pic = res.songs[0].al.picUrl;
         this.music.artist = res.songs[0].ar[0].name;
       });
       // 获取歌曲url
-      this.$http.get("song/url?id=" + this.id).then(res => {
+      this.$http.get("/song/url?id=" + this.id).then(res => {
         this.music.src = res.data[0].url;
+        if(!res.data[0].url){
+          Toast("此歌曲需要付费！");
+          this.music.src = "111"
+        }
       });
       
     },
     // 歌曲就绪时播放
     play(){
+      if(this.music.src){
         this.$refs.player.play();
+      }
     }
   },
   created() {
@@ -49,25 +55,12 @@ export default {
     id(){
       return this.$store.getters.songid;
     },
-    title(){
-      return this.$store.getters.songTitle;
-    },
-    pic(){
-      return this.$store.getters.songPic;
-    },
-    artist(){
-      return this.$store.getters.songArtist;
-    },
-    src(){
-      return this.$store.getters.songSrc;
-    }
   },
   watch: {
     // 监听歌曲id的改变，当歌曲id改变时重新获取歌曲信息
     id: {
       handler: async function(){
         this.init();
-        
       }
     }
   }

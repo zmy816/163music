@@ -59,6 +59,57 @@ var router = new VueRouter({
                 showFooter: true
             }
         },
+        {
+            path: "/playlist",
+            name: "PlayList",
+            redirect: "/playlist/recommend",
+            component: ()=>import("../views/playList"),
+            meta: {
+                showFooter: true
+            },
+            children:[
+                {
+                    path: "recommend",
+                    name: "Recommend",
+                    component: ()=> import("../views/playList/recommend.vue"),
+                    meta: {
+                        showFooter: true
+                    },
+                },
+                {
+                    path: "official",
+                    name: "Official",
+                    component: ()=> import("../views/playList/official.vue"),
+                    meta: {
+                        showFooter: true
+                    },
+                },
+                {
+                    path: "highquality",
+                    name: "Highquality",
+                    component: ()=> import("../views/playList/highquality.vue"),
+                    meta: {
+                        showFooter: true
+                    },
+                },
+                {
+                    path: "chinese",
+                    name: "Chinese",
+                    component: ()=> import("../views/playList/Chinese.vue"),
+                    meta: {
+                        showFooter: true
+                    },
+                },
+                {
+                    path: "popular",
+                    name: "Popular",
+                    component: ()=> import("../views/playList/popular.vue"),
+                    meta: {
+                        showFooter: true
+                    },
+                }
+            ]
+        }
     ],
     linkActiveClass: "active"
 })

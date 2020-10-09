@@ -27,7 +27,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import { Toast } from "vant";
 import { setToken } from "../../util/auth";
 export default {
@@ -55,12 +54,12 @@ export default {
     tologin() {
       var dt = new Date();
       var timestamp = dt.getTime();
-      axios({
+      this.$http({
         url: "http://192.168.15.33:3000/login/cellphone?timestamp=" + timestamp,
         method: "post",
         data: { phone: this.username, password: this.password },
       }).then((res) => {
-        var data = res.data;
+        var data = res;
           if(data.code == 200){
             setToken(data.token);  //在cookie中存入token
             this.$store.dispatch("setToken", data.token); //在vuex中存入token
